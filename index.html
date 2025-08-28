@@ -801,48 +801,35 @@
                 data.payment_method_type = 'direct_deposit';
             }
             
-            // Simulate form submission (replace with actual webhook call)
-            setTimeout(() => {
-                // Reset button state
+            // Send to webhook
+            fetch(config.webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
                 submitBtn.disabled = false;
                 loadingSpinner.style.display = 'none';
                 submitText.textContent = 'Submit Bank Details';
                 
-                // Show success message (in real implementation, handle actual response)
-                showSuccess();
-                
-                // Optionally reset form or redirect
-                console.log('Form data that would be sent:', data);
-                
-                // For actual implementation, uncomment and modify:
-                /*
-                fetch(config.webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(result => {
-                    submitBtn.disabled = false;
-                    loadingSpinner.style.display = 'none';
-                    submitText.textContent = 'Submit Bank Details';
-                    
-                    if (result.success) {
-                        showSuccess();
-                    } else {
-                        showError(result.message || 'Submission failed. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    submitBtn.disabled = false;
-                    loadingSpinner.style.display = 'none';
-                    submitText.textContent = 'Submit Bank Details';
-                    showError('Network error. Please check your connection and try again.');
-                });
-                */
-            }, 2000); // Simulate 2-second processing time
+                if (result.success !== false) { // Assume success if no explicit failure
+                    showSuccess();
+                    // Optionally redirect or clear form
+                    // window.location.href = '/thank-you';
+                } else {
+                    showError(result.message || 'Submission failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                submitBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+                submitText.textContent = 'Submit Bank Details';
+                showError('Network error. Please check your connection and try again.');
+                console.error('Webhook error:', error);
+            });
         }
     </script>
 </body>
