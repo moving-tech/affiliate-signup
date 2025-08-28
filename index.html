@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Details - Referral Payout</title>
+    <style>
+        /* Configuration Variables - Easy to customize */
+        :root {
+            /* Company Branding */
+            --company-logo-url: 'https://i.imgur.com/Srya5nR.png';
+            --company-name: 'Stone Hands Moving';
+            
+            /* Color Palette */
+            --primary-color: #7f1d1d;
+            --secondary-color: #991b1b;
+            --accent-color: #dc2626;
+            --text-dark: #ffffff;
+            --text-light: #b0b0b0;
+            --background-light: #1a1a1a;
+            --background-dark: #0d1117;
+            --border-color: #30363d;
+            --card-background: #21262d;
+            
+            /* Derived Styling Variables */
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+            --shadow-primary: 0 25px 50px rgba(127, 29, 29, 0.3);
+            --shadow-hover: 0 10px 25px rgba(220, 38, 38, 0.4);
+            --logo-background: var(--card-background);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background-dark);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(127, 29, 29, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(220, 38, 38, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(153, 27, 27, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            padding: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 2rem auto;
+            background: var(--card-background);
+            border-radius: 20px;
+            box-shadow: var(--shadow-primary);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--background-light);
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .header {
+            background: var(--gradient-primary);
+            color: var(--text-dark);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            opacity: 0.1;
+        }
+
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background-image: var(--company-logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: var(--logo-background);
+            border-radius: 16px;
+            margin: 0 auto 1rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        /* Logo background overlay to prevent white bleeding */
+        .company-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--logo-background);
+            z-index: -1;
+        }
+
+        /* Fallback if image doesn't load */
+        .company-logo::after {
+            content: '🏛️';
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .company-logo.no-image::after {
+            opacity: 1;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-content {
+            padding: 2rem;
+            background: var(--card-background);
+        }
+
+        .security-banner {
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .security-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .security-text {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(21, 128, 61, 0.05) 100%);
+            color: #4ade80;
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(185, 28, 28, 0.05) 100%);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-number {
+            width: 24px;
+            height: 24px;
+            background: var(--gradient-primary);
+            color: var(--text-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+        
+        .required {
+            color: var(--accent-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--background-light);
+            color: var(--text-dark);
+        }
+
+        input::placeholder {
+            color: var(--text-light);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input:valid {
+            border-color: #4ade80;
+        }
+
+        input:invalid:not(:placeholder-shown) {
+            border-color: var(--accent-color);
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon input {
+            padding-left: 2.5rem;
+        }
+
+        .input-icon::before {
+            content: attr(data-icon);
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.1rem;
+            z-index: 1;
+        }
+
+        .bank-fields {
+            background: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .bank-fields.active {
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.05) 0%, rgba(220, 38, 38, 0.02) 100%);
+            border-color: var(--accent-color);
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .country-info {
+            background: var(--card-background);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .submit-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .submit-btn {
+            background: var(--gradient-primary);
+            color: var(--text-dark);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn:disabled:hover {
+            box-shadow: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: var(--accent-color);
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--card-background);
+            color: var(--text-dark);
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="header">
+            <div class="company-logo"></div>
+            <h1>Secure Bank Details</h1>
+            <p>Complete your referral reward setup</p>
+        </div>
+
+        <div class="form-content">
+            <div class="security-banner">
+                <div class="security-icon">🔒</div>
+                <div class="security-text">
+                    <strong>Your data is secure:</strong> All information is encrypted using bank-level security. We only use this data to process your referral payout and will never share it with third parties.
+                </div>
+            </div>
+
+            <div class="alert alert-success" id="successAlert">
+                <strong>✅ Success!</strong> Your bank details have been submitted successfully. You'll receive a confirmation email shortly, and your payout will be processed within 3-5 business days.
+            </div>
+
+            <div class="alert alert-error" id="errorAlert">
+                <strong>❌ Error:</strong> <span id="errorMessage">There was an error submitting your information. Please try again or contact support.</span>
+            </div>
+
+            <form id="bankDetailsForm">
+                <input type="hidden" id="customerId" name="customer_id" value="test123">
+                
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">1</span>
+                        Personal Information
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name <span class="required">*</span></label>
+                            <div class="input-icon" data-icon="👤">
+                                <input type="text" id="fullName" name="full_name" required 
+                                       placeholder="Enter your full legal name" 
+                                       oninput="updateProgress()">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <div class="input-icon" data-icon="📧">
+                                <input type="email" id="email" name="email" required 
+                                       placeholder="your@email.com"
+                                       oninput="updateProgress()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banking Information Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">2</span>
+                        Banking Information
+                    </div>
+
+                    <div class="country-info">
+                        🇨🇦 <strong>Canadian Banking:</strong> Choose between Interac e-Transfer (just email needed) or traditional bank transfer (institution, transit, and account number required).
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div class="form-group">
+                        <label for="interacSupport">
+                            Payment Method <span class="required">*</span>
+                            <span class="tooltip">ℹ️
+                                <span class="tooltiptext">Interac e-Transfer is faster and more convenient if your bank supports it</span>
+                            </span>
+                        </label>
+                        <select id="interacSupport" name="interac_support" onchange="toggleInteracFields(); updateProgress();">
+                            <option value="">Select payment method</option>
+                            <option value="yes">💸 Interac e-Transfer (Recommended)</option>
+                            <option value="no">🏦 Direct Bank Transfer</option>
+                        </select>
+                    </div>
+
+                    <!-- Interac e-Transfer Email Field -->
+                    <div id="interacEmailField" style="display: none;">
+                        <div class="form-group">
+                            <label for="interacEmail">
+                                Interac e-Transfer Email <span class="required">*</span>
+                                <span class="tooltip">ℹ️
+                                    <span class="tooltiptext">Email address registered with your bank for Interac e-Transfer</span>
+                                </span>
+                            </label>
+                            <div class="input-icon" data-icon="📧">
+                                <input type="email" id="interacEmail" name="interac_email" 
+                                       placeholder="your-bank-email@example.com"
+                                       oninput="updateProgress()">
+                            </div>
+                            <small style="color: var(--text-light); margin-top: 0.5rem; display: block;">
+                                💡 This should be the email address you use to receive Interac e-Transfers from your bank
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Traditional Banking Fields -->
+                    <div id="traditionalBankingFields" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="institutionNumber">
+                                    Institution Number <span class="required">*</span>
+                                    <span class="tooltip">ℹ️
+                                        <span class="tooltiptext">3-digit bank code (e.g., 001 for Bank of Montreal)</span>
+                                    </span>
+                                </label>
+                                <div class="input-icon" data-icon="🏛️">
+                                    <input type="text" id="institutionNumber" name="institution_number" 
+                                           placeholder="123" maxlength="3" pattern="[0-9]{3}"
+                                           oninput="updateProgress()">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="transitNumber">
+                                    Transit Number <span class="required">*</span>
+                                    <span class="tooltip">ℹ️
+                                        <span class="tooltiptext">5-digit branch code</span>
+                                    </span>
+                                </label>
+                                <div class="input-icon" data-icon="🏪">
+                                    <input type="text" id="transitNumber" name="transit_number" 
+                                           placeholder="12345" maxlength="5" pattern="[0-9]{5}"
+                                           oninput="updateProgress()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="caAccountNumber">
+                                Account Number <span class="required">*</span>
+                                <span class="tooltip">ℹ️
+                                    <span class="tooltiptext">7-12 digit account number</span>
+                                </span>
+                            </label>
+                            <div class="input-icon" data-icon="💳">
+                                <input type="text" id="caAccountNumber" name="ca_account_number" 
+                                       placeholder="1234567890" minlength="7" maxlength="12" pattern="[0-9]{7,12}"
+                                       oninput="updateProgress()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <div class="loading-spinner" id="loadingSpinner"></div>
+                        <span id="submitText">Submit Bank Details</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            webhookUrl: 'https://YOUR-N8N-INSTANCE.com/webhook/bank-details-submitted',
+            companyName: 'Stone Hands Moving'
+        };
+
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+            initializeLogo();
+        });
+
+        function initializeLogo() {
+            const logo = document.querySelector('.company-logo');
+            const img = new Image();
+            
+            // Get the logo URL from CSS variables
+            const logoUrl = getComputedStyle(document.documentElement)
+                .getPropertyValue('--company-logo-url')
+                .replace(/['"]/g, ''); // Remove quotes
+            
+            img.onload = function() {
+                // Image loaded successfully, no need for fallback
+                logo.classList.remove('no-image');
+            };
+            
+            img.onerror = function() {
+                // Image failed to load, show fallback
+                logo.classList.add('no-image');
+                console.log('Logo image failed to load, showing fallback');
+            };
+            
+            img.src = logoUrl;
+            
+            // Also check if background image loaded after a delay
+            setTimeout(() => {
+                const computedStyle = window.getComputedStyle(logo);
+                const bgImage = computedStyle.backgroundImage;
+                
+                if (bgImage === 'none' || bgImage === '') {
+                    logo.classList.add('no-image');
+                }
+            }, 2000);
+        }
+
+        function initializeForm() {
+            // Get customer ID from URL parameter or use test value
+            const urlParams = new URLSearchParams(window.location.search);
+            let customerId = urlParams.get('customer_id');
+            
+            if (!customerId) {
+                customerId = 'test123'; // For demo purposes
+            }
+            
+            document.getElementById('customerId').value = customerId;
+
+            // Initialize progress
+            updateProgress();
+
+            // Set up form submission
+            document.getElementById('bankDetailsForm').addEventListener('submit', handleFormSubmission);
+        }
+
+        function updateProgress() {
+            const requiredFields = [
+                'fullName', 'email', 'interacSupport'
+            ];
+            
+            // Add payment method specific fields
+            const interacSupport = document.getElementById('interacSupport')?.value;
+            if (interacSupport === 'yes') {
+                requiredFields.push('interacEmail');
+            } else if (interacSupport === 'no') {
+                requiredFields.push('institutionNumber', 'transitNumber', 'caAccountNumber');
+            }
+
+            let filledFields = 0;
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && field.value.trim() !== '') {
+                    filledFields++;
+                }
+            });
+
+            const progress = (filledFields / requiredFields.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function toggleInteracFields() {
+            const interacSupport = document.getElementById('interacSupport').value;
+            const interacEmailField = document.getElementById('interacEmailField');
+            const traditionalBankingFields = document.getElementById('traditionalBankingFields');
+            
+            if (interacSupport === 'yes') {
+                interacEmailField.style.display = 'block';
+                traditionalBankingFields.style.display = 'none';
+                
+                // Clear traditional banking fields
+                ['institutionNumber', 'transitNumber', 'caAccountNumber'].forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) field.value = '';
+                });
+            } else if (interacSupport === 'no') {
+                interacEmailField.style.display = 'none';
+                traditionalBankingFields.style.display = 'block';
+                
+                // Clear Interac email field
+                const interacEmail = document.getElementById('interacEmail');
+                if (interacEmail) interacEmail.value = '';
+            } else {
+                interacEmailField.style.display = 'none';
+                traditionalBankingFields.style.display = 'none';
+            }
+            
+            updateProgress();
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorAlert').style.display = 'block';
+            document.getElementById('successAlert').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showSuccess() {
+            document.getElementById('successAlert').style.display = 'block';
+            document.getElementById('errorAlert').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleFormSubmission(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const submitText = document.getElementById('submitText');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+            submitText.textContent = 'Processing...';
+            
+            // Collect form data
+            const formData = new FormData(document.getElementById('bankDetailsForm'));
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Add metadata for Canadian form
+            data.country = 'CA';
+            data.currency = 'CAD';
+            data.form_version = '2.0';
+            data.submission_timestamp = new Date().toISOString();
+            data.user_agent = navigator.userAgent;
+            
+            // Determine payment method type
+            const country = data.country;
+            if (country === 'CA' && data.interac_support === 'yes') {
+                data.payment_method_type = 'interac_etransfer';
+            } else {
+                data.payment_method_type = 'direct_deposit';
+            }
+            
+            // Simulate form submission (replace with actual webhook call)
+            setTimeout(() => {
+                // Reset button state
+                submitBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+                submitText.textContent = 'Submit Bank Details';
+                
+                // Show success message (in real implementation, handle actual response)
+                showSuccess();
+                
+                // Optionally reset form or redirect
+                console.log('Form data that would be sent:', data);
+                
+                // For actual implementation, uncomment and modify:
+                /*
+                fetch(config.webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    submitBtn.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                    submitText.textContent = 'Submit Bank Details';
+                    
+                    if (result.success) {
+                        showSuccess();
+                    } else {
+                        showError(result.message || 'Submission failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    submitBtn.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                    submitText.textContent = 'Submit Bank Details';
+                    showError('Network error. Please check your connection and try again.');
+                });
+                */
+            }, 2000); // Simulate 2-second processing time
+        }
+    </script>
+</body>
+</html>
