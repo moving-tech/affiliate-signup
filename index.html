@@ -450,20 +450,20 @@
 
         <div class="header">
             <div class="company-logo"></div>
-            <h1>Secure Bank Details</h1>
-            <p>Complete your referral reward setup</p>
+            <h1>Affiliate Program Signup</h1>
+            <p>Join our referral program and earn rewards</p>
         </div>
 
         <div class="form-content">
             <div class="security-banner">
-                <div class="security-icon">🔒</div>
+                <div class="security-icon">🤝</div>
                 <div class="security-text">
-                    <strong>Your data is secure:</strong> All information is encrypted using bank-level security. We only use this data to process your referral payout and will never share it with third parties.
+                    <strong>Join our affiliate program:</strong> Provide your payment details to receive commissions when you refer customers to us. Your information is encrypted and secure.
                 </div>
             </div>
 
             <div class="alert alert-success" id="successAlert">
-                <strong>✅ Success!</strong> Your bank details have been submitted successfully. You'll receive a confirmation email shortly, and your payout will be processed within 3-5 business days.
+                <strong>✅ Welcome to our affiliate program!</strong> Your signup has been completed successfully. You'll receive a confirmation email with your unique referral link and program details shortly.
             </div>
 
             <div class="alert alert-error" id="errorAlert">
@@ -485,7 +485,7 @@
                             <label for="fullName">Full Name <span class="required">*</span></label>
                             <div class="input-icon" data-icon="👤">
                                 <input type="text" id="fullName" name="full_name" required 
-                                       placeholder="Enter your full legal name" 
+                                       placeholder="Enter your full name" 
                                        oninput="updateProgress()">
                             </div>
                         </div>
@@ -501,12 +501,15 @@
                     </div>
                 </div>
 
-                <!-- Location & Currency Section -->
+                <!-- Payment Information Section -->
                 <div class="form-section">
                     <div class="section-title">
                         <span class="section-number">2</span>
-                        Location & Currency
+                        Payment Information
                     </div>
+                    <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                        💰 We'll use these details to send you commission payments when your referrals complete moves with us.
+                    </p>
 
                     <div class="form-row">
                         <div class="form-group">
@@ -711,7 +714,7 @@
                 <div class="submit-section">
                     <button type="submit" class="submit-btn" id="submitBtn">
                         <div class="loading-spinner" id="loadingSpinner"></div>
-                        <span id="submitText">Submit Bank Details</span>
+                        <span id="submitText">Join Affiliate Program</span>
                     </button>
                 </div>
             </form>
@@ -721,7 +724,7 @@
     <script>
         // Configuration
         const config = {
-            webhookUrl: 'https://YOUR-N8N-INSTANCE.com/webhook/bank-details-submitted',
+            webhookUrl: 'https://n8n-movers-project-n8n.5gwahg.easypanel.host/webhook/c2bca58d-44e6-408d-93c3-0e3f1809e0ac',
             companyName: 'Stone Hands Moving'
         };
 
@@ -810,23 +813,23 @@
                 case 'US':
                     document.getElementById('usFields').style.display = 'block';
                     document.getElementById('currency').value = 'USD';
-                    countryInfo.innerHTML = '🇺🇸 <strong>US Banking:</strong> We need your routing number and account number. You can find these on your checks or bank statement.';
+                    countryInfo.innerHTML = '🇺🇸 <strong>US Payment Details:</strong> We need your routing number and account number to send your affiliate commissions. You can find these on your checks or bank statement.';
                     break;
                 case 'CA':
                     document.getElementById('usFields').style.display = 'block';
                     document.getElementById('caFields').style.display = 'block';
                     document.getElementById('currency').value = 'CAD';
-                    countryInfo.innerHTML = '🇨🇦 <strong>Canadian Banking:</strong> Choose between Interac e-Transfer (faster) or traditional bank transfer. Interac e-Transfer only requires your email address!';
+                    countryInfo.innerHTML = '🇨🇦 <strong>Canadian Payment Options:</strong> Choose between Interac e-Transfer (faster) or traditional bank transfer for receiving your affiliate commissions!';
                     break;
                 case 'UK':
                     document.getElementById('ukFields').style.display = 'block';
                     document.getElementById('currency').value = 'GBP';
-                    countryInfo.innerHTML = '🇬🇧 <strong>UK Banking:</strong> We need your 6-digit sort code (XX-XX-XX format) and 8-digit account number.';
+                    countryInfo.innerHTML = '🇬🇧 <strong>UK Payment Details:</strong> We need your 6-digit sort code (XX-XX-XX format) and 8-digit account number to send your affiliate commissions.';
                     break;
                 case 'AU':
                     document.getElementById('auFields').style.display = 'block';
                     document.getElementById('currency').value = 'AUD';
-                    countryInfo.innerHTML = '🇦🇺 <strong>Australian Banking:</strong> We need your BSB code (XXX-XXX format) and account number.';
+                    countryInfo.innerHTML = '🇦🇺 <strong>Australian Payment Details:</strong> We need your BSB code (XXX-XXX format) and account number to send your affiliate commissions.';
                     break;
             }
         }
