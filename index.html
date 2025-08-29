@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bank Details - Referral Payout</title>
     <style>
-        /* Configuration Variables - Easy to customize */
+        /* Company Theme Configuration */
         :root {
-            /* Company Branding */
-            --company-logo-url: 'https://i.imgur.com/Srya5nR.png';
-            --company-name: 'Stone Hands Moving';
-            
-            /* Color Palette */
+            /* Stone Hands Moving Dark Theme Colors */
             --primary-color: #7f1d1d;
             --secondary-color: #991b1b;
             --accent-color: #dc2626;
@@ -22,12 +18,15 @@
             --border-color: #30363d;
             --card-background: #21262d;
             
-            /* Derived Styling Variables */
+            /* Company Logo */
+            --company-logo: url('https://i.imgur.com/Srya5nR.png');
+            --company-name: 'Stone Hands Moving';
+            
+            /* Form Styling Variables */
             --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
             --shadow-primary: 0 25px 50px rgba(127, 29, 29, 0.3);
             --shadow-hover: 0 10px 25px rgba(220, 38, 38, 0.4);
-            --logo-background: var(--card-background);
         }
 
         * {
@@ -94,48 +93,17 @@
         .company-logo {
             width: 80px;
             height: 80px;
-            background-image: var(--company-logo-url);
+            background-image: url('https://i.imgur.com/Srya5nR.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: var(--logo-background);
-            border-radius: 16px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
             margin: 0 auto 1rem;
             backdrop-filter: blur(10px);
             position: relative;
             z-index: 1;
             border: 2px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: var(--text-dark);
-            overflow: hidden;
-        }
-
-        /* Logo background overlay to prevent white bleeding */
-        .company-logo::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--logo-background);
-            z-index: -1;
-        }
-
-        /* Fallback if image doesn't load */
-        .company-logo::after {
-            content: '🏛️';
-            position: absolute;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1;
-        }
-
-        .company-logo.no-image::after {
-            opacity: 1;
         }
         
         .header h1 {
@@ -503,7 +471,7 @@
             </div>
 
             <form id="bankDetailsForm">
-                <input type="hidden" id="customerId" name="customer_id" value="test123">
+                <input type="hidden" id="customerId" name="customer_id" value="">
                 
                 <!-- Personal Information Section -->
                 <div class="form-section">
@@ -533,93 +501,208 @@
                     </div>
                 </div>
 
-                <!-- Banking Information Section -->
+                <!-- Location & Currency Section -->
                 <div class="form-section">
                     <div class="section-title">
                         <span class="section-number">2</span>
-                        Banking Information
+                        Location & Currency
                     </div>
 
-                    <div class="country-info">
-                        🇨🇦 <strong>Canadian Banking:</strong> Choose between Interac e-Transfer (just email needed) or traditional bank transfer (institution, transit, and account number required).
-                    </div>
-
-                    <!-- Payment Method Selection -->
-                    <div class="form-group">
-                        <label for="interacSupport">
-                            Payment Method <span class="required">*</span>
-                            <span class="tooltip">ℹ️
-                                <span class="tooltiptext">Interac e-Transfer is faster and more convenient if your bank supports it</span>
-                            </span>
-                        </label>
-                        <select id="interacSupport" name="interac_support" onchange="toggleInteracFields(); updateProgress();">
-                            <option value="">Select payment method</option>
-                            <option value="yes">💸 Interac e-Transfer (Recommended)</option>
-                            <option value="no">🏦 Direct Bank Transfer</option>
-                        </select>
-                    </div>
-
-                    <!-- Interac e-Transfer Email Field -->
-                    <div id="interacEmailField" style="display: none;">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="interacEmail">
-                                Interac e-Transfer Email <span class="required">*</span>
-                                <span class="tooltip">ℹ️
-                                    <span class="tooltiptext">Email address registered with your bank for Interac e-Transfer</span>
-                                </span>
-                            </label>
-                            <div class="input-icon" data-icon="📧">
-                                <input type="email" id="interacEmail" name="interac_email" 
-                                       placeholder="your-bank-email@example.com"
-                                       oninput="updateProgress()">
-                            </div>
-                            <small style="color: var(--text-light); margin-top: 0.5rem; display: block;">
-                                💡 This should be the email address you use to receive Interac e-Transfers from your bank
-                            </small>
+                            <label for="country">Country <span class="required">*</span></label>
+                            <select id="country" name="country" required onchange="updateBankFields(); updateProgress();">
+                                <option value="">Select your country</option>
+                                <option value="US">🇺🇸 United States</option>
+                                <option value="CA">🇨🇦 Canada</option>
+                                <option value="UK">🇬🇧 United Kingdom</option>
+                                <option value="AU">🇦🇺 Australia</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currency">Currency <span class="required">*</span></label>
+                            <select id="currency" name="currency" required onchange="updateProgress()">
+                                <option value="">Select currency</option>
+                                <option value="USD">💵 USD</option>
+                                <option value="CAD">🍁 CAD</option>
+                                <option value="GBP">💷 GBP</option>
+                                <option value="AUD">🇦🇺 AUD</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Traditional Banking Fields -->
-                    <div id="traditionalBankingFields" style="display: none;">
-                        <div class="form-row">
+                    <!-- Banking Information Section -->
+                    <div class="bank-fields" id="bankFields">
+                        <div class="country-info" id="countryInfo"></div>
+                        
+                        <!-- US Fields -->
+                        <div id="usFields" style="display: none;">
                             <div class="form-group">
-                                <label for="institutionNumber">
-                                    Institution Number <span class="required">*</span>
+                                <label for="routingNumber">
+                                    Routing Number <span class="required">*</span>
                                     <span class="tooltip">ℹ️
-                                        <span class="tooltiptext">3-digit bank code (e.g., 001 for Bank of Montreal)</span>
+                                        <span class="tooltiptext">9-digit number found on your checks or bank statement</span>
                                     </span>
                                 </label>
-                                <div class="input-icon" data-icon="🏛️">
-                                    <input type="text" id="institutionNumber" name="institution_number" 
-                                           placeholder="123" maxlength="3" pattern="[0-9]{3}"
+                                <div class="input-icon" data-icon="🏦">
+                                    <input type="text" id="routingNumber" name="routing_number" 
+                                           placeholder="123456789" maxlength="9" pattern="[0-9]{9}"
                                            oninput="updateProgress()">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="transitNumber">
-                                    Transit Number <span class="required">*</span>
-                                    <span class="tooltip">ℹ️
-                                        <span class="tooltiptext">5-digit branch code</span>
-                                    </span>
-                                </label>
-                                <div class="input-icon" data-icon="🏪">
-                                    <input type="text" id="transitNumber" name="transit_number" 
-                                           placeholder="12345" maxlength="5" pattern="[0-9]{5}"
+                                <label for="accountNumber">Account Number <span class="required">*</span></label>
+                                <div class="input-icon" data-icon="💳">
+                                    <input type="text" id="accountNumber" name="account_number" 
+                                           placeholder="Your account number"
                                            oninput="updateProgress()">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="accountType">Account Type <span class="required">*</span></label>
+                                <select id="accountType" name="account_type" onchange="updateProgress()">
+                                    <option value="">Select type</option>
+                                    <option value="checking">Checking</option>
+                                    <option value="savings">Savings</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="caAccountNumber">
-                                Account Number <span class="required">*</span>
-                                <span class="tooltip">ℹ️
-                                    <span class="tooltiptext">7-12 digit account number</span>
-                                </span>
-                            </label>
-                            <div class="input-icon" data-icon="💳">
-                                <input type="text" id="caAccountNumber" name="ca_account_number" 
-                                       placeholder="1234567890" minlength="7" maxlength="12" pattern="[0-9]{7,12}"
-                                       oninput="updateProgress()">
+
+                        <!-- Canada Additional Fields -->
+                        <div id="caFields" style="display: none;">
+                            <!-- Interac e-Transfer Option -->
+                            <div class="form-group">
+                                <label for="interacSupport">
+                                    Payment Method <span class="required">*</span>
+                                    <span class="tooltip">ℹ️
+                                        <span class="tooltiptext">Interac e-Transfer is faster and more convenient if your bank supports it</span>
+                                    </span>
+                                </label>
+                                <select id="interacSupport" name="interac_support" onchange="toggleInteracFields(); updateProgress();">
+                                    <option value="">Select payment method</option>
+                                    <option value="yes">💸 Interac e-Transfer (Recommended)</option>
+                                    <option value="no">🏦 Direct Bank Transfer</option>
+                                </select>
+                            </div>
+
+                            <!-- Interac e-Transfer Email Field -->
+                            <div id="interacEmailField" style="display: none;">
+                                <div class="form-group">
+                                    <label for="interacEmail">
+                                        Interac e-Transfer Email <span class="required">*</span>
+                                        <span class="tooltip">ℹ️
+                                            <span class="tooltiptext">Email address registered with your bank for Interac e-Transfer</span>
+                                        </span>
+                                    </label>
+                                    <div class="input-icon" data-icon="📧">
+                                        <input type="email" id="interacEmail" name="interac_email" 
+                                               placeholder="your-bank-email@example.com"
+                                               oninput="updateProgress()">
+                                    </div>
+                                    <small style="color: var(--text-light); margin-top: 0.5rem; display: block;">
+                                        💡 This should be the email address you use to receive Interac e-Transfers from your bank
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Traditional Banking Fields -->
+                            <div id="traditionalBankingFields" style="display: none;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="institutionNumber">
+                                            Institution Number <span class="required">*</span>
+                                            <span class="tooltip">ℹ️
+                                                <span class="tooltiptext">3-digit bank code</span>
+                                            </span>
+                                        </label>
+                                        <div class="input-icon" data-icon="🏛️">
+                                            <input type="text" id="institutionNumber" name="institution_number" 
+                                                   placeholder="123" maxlength="3" pattern="[0-9]{3}"
+                                                   oninput="updateProgress()">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="transitNumber">
+                                            Transit Number <span class="required">*</span>
+                                            <span class="tooltip">ℹ️
+                                                <span class="tooltiptext">5-digit branch code</span>
+                                            </span>
+                                        </label>
+                                        <div class="input-icon" data-icon="🏪">
+                                            <input type="text" id="transitNumber" name="transit_number" 
+                                                   placeholder="12345" maxlength="5" pattern="[0-9]{5}"
+                                                   oninput="updateProgress()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="caAccountNumber">
+                                        Account Number <span class="required">*</span>
+                                        <span class="tooltip">ℹ️
+                                            <span class="tooltiptext">7-12 digit account number</span>
+                                        </span>
+                                    </label>
+                                    <div class="input-icon" data-icon="💳">
+                                        <input type="text" id="caAccountNumber" name="ca_account_number" 
+                                               placeholder="1234567890" minlength="7" maxlength="12" pattern="[0-9]{7,12}"
+                                               oninput="updateProgress()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UK Fields -->
+                        <div id="ukFields" style="display: none;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="sortCode">
+                                        Sort Code <span class="required">*</span>
+                                        <span class="tooltip">ℹ️
+                                            <span class="tooltiptext">6-digit code in format XX-XX-XX</span>
+                                        </span>
+                                    </label>
+                                    <div class="input-icon" data-icon="🔢">
+                                        <input type="text" id="sortCode" name="sort_code" 
+                                               placeholder="12-34-56" pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}"
+                                               oninput="formatSortCode(this); updateProgress()">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ukAccountNumber">Account Number <span class="required">*</span></label>
+                                    <div class="input-icon" data-icon="💳">
+                                        <input type="text" id="ukAccountNumber" name="uk_account_number" 
+                                               placeholder="12345678" maxlength="8" pattern="[0-9]{8}"
+                                               oninput="updateProgress()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Australia Fields -->
+                        <div id="auFields" style="display: none;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bsb">
+                                        BSB Code <span class="required">*</span>
+                                        <span class="tooltip">ℹ️
+                                            <span class="tooltiptext">6-digit code in format XXX-XXX</span>
+                                        </span>
+                                    </label>
+                                    <div class="input-icon" data-icon="🏦">
+                                        <input type="text" id="bsb" name="bsb" 
+                                               placeholder="123-456" pattern="[0-9]{3}-[0-9]{3}"
+                                               oninput="formatBSB(this); updateProgress()">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auAccountNumber">Account Number <span class="required">*</span></label>
+                                    <div class="input-icon" data-icon="💳">
+                                        <input type="text" id="auAccountNumber" name="au_account_number" 
+                                               placeholder="123456789"
+                                               oninput="updateProgress()">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -638,59 +721,27 @@
     <script>
         // Configuration
         const config = {
-            webhookUrl: 'https://n8n-movers-project-n8n.5gwahg.easypanel.host/webhook/c2bca58d-44e6-408d-93c3-0e3f1809e0ac',
+            webhookUrl: 'https://YOUR-N8N-INSTANCE.com/webhook/bank-details-submitted',
             companyName: 'Stone Hands Moving'
         };
 
         // Initialize form
         document.addEventListener('DOMContentLoaded', function() {
             initializeForm();
-            initializeLogo();
         });
 
-        function initializeLogo() {
-            const logo = document.querySelector('.company-logo');
-            const img = new Image();
-            
-            // Get the logo URL from CSS variables
-            const logoUrl = getComputedStyle(document.documentElement)
-                .getPropertyValue('--company-logo-url')
-                .replace(/['"]/g, ''); // Remove quotes
-            
-            img.onload = function() {
-                // Image loaded successfully, no need for fallback
-                logo.classList.remove('no-image');
-            };
-            
-            img.onerror = function() {
-                // Image failed to load, show fallback
-                logo.classList.add('no-image');
-                console.log('Logo image failed to load, showing fallback');
-            };
-            
-            img.src = logoUrl;
-            
-            // Also check if background image loaded after a delay
-            setTimeout(() => {
-                const computedStyle = window.getComputedStyle(logo);
-                const bgImage = computedStyle.backgroundImage;
-                
-                if (bgImage === 'none' || bgImage === '') {
-                    logo.classList.add('no-image');
-                }
-            }, 2000);
-        }
-
         function initializeForm() {
-            // Get customer ID from URL parameter or use test value
+            // Get customer ID from URL parameter
             const urlParams = new URLSearchParams(window.location.search);
-            let customerId = urlParams.get('customer_id');
+            const customerId = urlParams.get('customer_id');
             
-            if (!customerId) {
-                customerId = 'test123'; // For demo purposes
+            if (customerId) {
+                document.getElementById('customerId').value = customerId;
+            } else {
+                showError('Invalid access link. Please use the link provided in your email.');
+                document.getElementById('bankDetailsForm').style.display = 'none';
+                return;
             }
-            
-            document.getElementById('customerId').value = customerId;
 
             // Initialize progress
             updateProgress();
@@ -701,15 +752,26 @@
 
         function updateProgress() {
             const requiredFields = [
-                'fullName', 'email', 'interacSupport'
+                'fullName', 'email', 'country', 'currency'
             ];
             
-            // Add payment method specific fields
-            const interacSupport = document.getElementById('interacSupport')?.value;
-            if (interacSupport === 'yes') {
-                requiredFields.push('interacEmail');
-            } else if (interacSupport === 'no') {
-                requiredFields.push('institutionNumber', 'transitNumber', 'caAccountNumber');
+            // Add country-specific required fields
+            const country = document.getElementById('country').value;
+            if (country === 'US') {
+                requiredFields.push('routingNumber', 'accountNumber', 'accountType');
+            } else if (country === 'CA') {
+                const interacSupport = document.getElementById('interacSupport')?.value;
+                requiredFields.push('routingNumber', 'accountNumber', 'accountType', 'interacSupport');
+                
+                if (interacSupport === 'yes') {
+                    requiredFields.push('interacEmail');
+                } else if (interacSupport === 'no') {
+                    requiredFields.push('institutionNumber', 'transitNumber', 'caAccountNumber');
+                }
+            } else if (country === 'UK') {
+                requiredFields.push('sortCode', 'ukAccountNumber');
+            } else if (country === 'AU') {
+                requiredFields.push('bsb', 'auAccountNumber');
             }
 
             let filledFields = 0;
@@ -722,6 +784,51 @@
 
             const progress = (filledFields / requiredFields.length) * 100;
             document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateBankFields() {
+            const country = document.getElementById('country').value;
+            const fields = ['usFields', 'caFields', 'ukFields', 'auFields'];
+            const bankFields = document.getElementById('bankFields');
+            const countryInfo = document.getElementById('countryInfo');
+            
+            // Hide all fields first
+            fields.forEach(field => {
+                const element = document.getElementById(field);
+                if (element) element.style.display = 'none';
+            });
+            
+            if (!country) {
+                bankFields.classList.remove('active');
+                return;
+            }
+
+            bankFields.classList.add('active');
+            
+            // Show relevant fields and set currency
+            switch(country) {
+                case 'US':
+                    document.getElementById('usFields').style.display = 'block';
+                    document.getElementById('currency').value = 'USD';
+                    countryInfo.innerHTML = '🇺🇸 <strong>US Banking:</strong> We need your routing number and account number. You can find these on your checks or bank statement.';
+                    break;
+                case 'CA':
+                    document.getElementById('usFields').style.display = 'block';
+                    document.getElementById('caFields').style.display = 'block';
+                    document.getElementById('currency').value = 'CAD';
+                    countryInfo.innerHTML = '🇨🇦 <strong>Canadian Banking:</strong> Choose between Interac e-Transfer (faster) or traditional bank transfer. Interac e-Transfer only requires your email address!';
+                    break;
+                case 'UK':
+                    document.getElementById('ukFields').style.display = 'block';
+                    document.getElementById('currency').value = 'GBP';
+                    countryInfo.innerHTML = '🇬🇧 <strong>UK Banking:</strong> We need your 6-digit sort code (XX-XX-XX format) and 8-digit account number.';
+                    break;
+                case 'AU':
+                    document.getElementById('auFields').style.display = 'block';
+                    document.getElementById('currency').value = 'AUD';
+                    countryInfo.innerHTML = '🇦🇺 <strong>Australian Banking:</strong> We need your BSB code (XXX-XXX format) and account number.';
+                    break;
+            }
         }
 
         function toggleInteracFields() {
@@ -753,85 +860,26 @@
             updateProgress();
         }
 
+        function formatSortCode(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0,2) + '-' + value.substring(2);
+            }
+            if (value.length >= 6) {
+                value = value.substring(0,5) + '-' + value.substring(5,7);
+            }
+            input.value = value;
+        }
+
+        function formatBSB(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            if (value.length >= 3) {
+                value = value.substring(0,3) + '-' + value.substring(3,6);
+            }
+            input.value = value;
+        }
+
         function showError(message) {
             document.getElementById('errorMessage').textContent = message;
             document.getElementById('errorAlert').style.display = 'block';
-            document.getElementById('successAlert').style.display = 'none';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function showSuccess() {
-            document.getElementById('successAlert').style.display = 'block';
-            document.getElementById('errorAlert').style.display = 'none';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function handleFormSubmission(event) {
-            event.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const submitText = document.getElementById('submitText');
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            loadingSpinner.style.display = 'block';
-            submitText.textContent = 'Processing...';
-            
-            // Collect form data
-            const formData = new FormData(document.getElementById('bankDetailsForm'));
-            const data = {};
-            
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
-            
-            // Add metadata for Canadian form
-            data.country = 'CA';
-            data.currency = 'CAD';
-            data.form_version = '2.0';
-            data.submission_timestamp = new Date().toISOString();
-            data.user_agent = navigator.userAgent;
-            
-            // Determine payment method type
-            const country = data.country;
-            if (country === 'CA' && data.interac_support === 'yes') {
-                data.payment_method_type = 'interac_etransfer';
-            } else {
-                data.payment_method_type = 'direct_deposit';
-            }
-            
-            // Send to webhook
-            fetch(config.webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                submitBtn.disabled = false;
-                loadingSpinner.style.display = 'none';
-                submitText.textContent = 'Submit Bank Details';
-                
-                if (result.success !== false) { // Assume success if no explicit failure
-                    showSuccess();
-                    // Optionally redirect or clear form
-                    // window.location.href = '/thank-you';
-                } else {
-                    showError(result.message || 'Submission failed. Please try again.');
-                }
-            })
-            .catch(error => {
-                submitBtn.disabled = false;
-                loadingSpinner.style.display = 'none';
-                submitText.textContent = 'Submit Bank Details';
-                showError('Network error. Please check your connection and try again.');
-                console.error('Webhook error:', error);
-            });
-        }
-    </script>
-</body>
-</html>
-
+            document.getElementById('successAlert').style.display = '
