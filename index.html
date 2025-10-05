@@ -672,10 +672,14 @@
             const customerEmail = urlParams.get('email');
             const quoteNumber = urlParams.get('quoteNumber');
             
-            if (customerEmail && quoteNumber) {
+            if (customerEmail) {
                 document.getElementById('customerEmail').value = customerEmail;
-                document.getElementById('quoteNumber').value = quoteNumber;
                 document.getElementById('email').value = customerEmail;
+                
+                // Quote number is optional
+                if (quoteNumber) {
+                    document.getElementById('quoteNumber').value = quoteNumber;
+                }
             } else {
                 showError('Invalid access link. Please use the link provided in your email.');
                 document.getElementById('bankDetailsForm').style.display = 'none';
