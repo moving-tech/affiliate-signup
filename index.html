@@ -94,47 +94,31 @@
         .company-logo {
             width: 120px;
             height: 80px;
-            background-image: var(--company-logo-url);
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-color: var(--logo-background);
-            border-radius: 12px;
             margin: 0 auto 1rem;
-            backdrop-filter: blur(10px);
             position: relative;
             z-index: 1;
-            border: 2px solid rgba(255,255,255,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            color: var(--text-dark);
-            overflow: hidden;
-            padding: 0.5rem;
         }
 
-        .company-logo::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--logo-background);
-            z-index: -1;
+        .company-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
-        .company-logo::after {
-            content: '🚚';
-            position: absolute;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1;
+        .company-logo-fallback {
+            font-size: 2.5rem;
+            display: none;
         }
 
-        .company-logo.no-image::after {
-            opacity: 1;
+        .company-logo.no-image .company-logo-fallback {
+            display: block;
+        }
+
+        .company-logo.no-image img {
+            display: none;
         }
         
         .header h1 {
@@ -546,7 +530,10 @@
         </div>
 
         <div class="header">
-            <div class="company-logo"></div>
+            <div class="company-logo">
+                <img src="https://i.imgur.com/NA0efXT.png" alt="Just Move Vancouver" id="companyLogoImg">
+                <div class="company-logo-fallback">🚚</div>
+            </div>
             <h1>Referrals Program Signup</h1>
             <p>Complete your referral reward setup</p>
         </div>
@@ -746,30 +733,19 @@
 
         function initializeLogo() {
             const logo = document.querySelector('.company-logo');
-            const img = new Image();
-            const logoUrl = getComputedStyle(document.documentElement)
-                .getPropertyValue('--company-logo-url')
-                .replace(/['"]/g, '');
+            const logoImg = document.getElementById('companyLogoImg');
             
-            img.onload = function() {
-                logo.classList.remove('no-image');
-            };
-            
-            img.onerror = function() {
-                logo.classList.add('no-image');
-                console.log('Logo image failed to load, showing fallback');
-            };
-            
-            img.src = logoUrl;
-            
-            setTimeout(() => {
-                const computedStyle = window.getComputedStyle(logo);
-                const bgImage = computedStyle.backgroundImage;
-                
-                if (bgImage === 'none' || bgImage === '') {
+            if (logoImg) {
+                logoImg.onerror = function() {
                     logo.classList.add('no-image');
-                }
-            }, 2000);
+                    console.log('Logo image failed to load, showing fallback truck emoji');
+                };
+                
+                logoImg.onload = function() {
+                    logo.classList.remove('no-image');
+                    console.log('Logo loaded successfully');
+                };
+            }
         }
 
         function initializeForm() {
