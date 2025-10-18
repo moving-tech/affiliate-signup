@@ -554,6 +554,14 @@
                     </button>
                 </div>
 
+                <div class="referral-link-box" style="text-align: center;">
+                    <div class="referral-link-label">Your QR Code:</div>
+                    <img id="qrCodeImage" src="" alt="Referral QR Code" style="max-width: 200px; height: auto; margin: 1rem auto; display: block; border-radius: 8px;">
+                    <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.5rem;">
+                        People can scan this to access your referral link
+                    </p>
+                </div>
+
                 <p style="color: var(--text-dark); font-size: 0.9rem;">
                     Share this link with friends and family. When they book a move with us, you'll earn a commission!
                 </p>
@@ -576,8 +584,8 @@
                 </div>
 
                 <form id="bankDetailsForm">
-                    <input type="hidden" id="customerEmail" name="customer_email" value="">
-                    <input type="hidden" id="quoteNumber" name="quote_number" value="">
+                    <input type="hidden" id="customerEmail" name="email" value="">
+                    <input type="hidden" id="quoteNumber" name="quoteNumber" value="">
                     
                     <div class="form-section">
                         <div class="section-title">
@@ -589,17 +597,17 @@
                             <div class="form-group">
                                 <label for="fullName">Full Name <span class="required">*</span></label>
                                 <div class="input-icon" data-icon="👤">
-                                    <input type="text" id="fullName" name="full_name" required 
+                                    <input type="text" id="fullName" name="name" required 
                                            placeholder="Enter your full legal name" 
                                            oninput="updateProgress()">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="email">Email Address <span class="required">*</span></label>
-                                <div class="input-icon" data-icon="📧">
-                                    <input type="email" id="email" name="email" required 
-                                           placeholder="your@email.com"
+                                <label for="phone">Phone Number <span class="required">*</span></label>
+                                <div class="input-icon" data-icon="📱">
+                                    <input type="tel" id="phone" name="phone" required 
+                                           placeholder="(555) 123-4567"
                                            oninput="updateProgress()">
                                 </div>
                             </div>
@@ -623,7 +631,7 @@
                                     <span class="tooltiptext">Interac e-Transfer is faster and more convenient if your bank supports it</span>
                                 </span>
                             </label>
-                            <select id="interacSupport" name="interac_support" onchange="toggleInteracFields(); updateProgress();">
+                            <select id="interacSupport" name="interacSupport" onchange="toggleInteracFields(); updateProgress();">
                                 <option value="">Select payment method</option>
                                 <option value="yes">💸 Interac e-Transfer (Recommended)</option>
                                 <option value="no">🏦 Direct Bank Transfer</option>
@@ -639,7 +647,7 @@
                                     </span>
                                 </label>
                                 <div class="input-icon" data-icon="📧">
-                                    <input type="email" id="interacEmail" name="interac_email" 
+                                    <input type="email" id="interacEmail" name="interacEmail" 
                                            placeholder="your-bank-email@example.com"
                                            oninput="updateProgress()">
                                 </div>
@@ -659,7 +667,7 @@
                                         </span>
                                     </label>
                                     <div class="input-icon" data-icon="🏛️">
-                                        <input type="text" id="institutionNumber" name="institution_number" 
+                                        <input type="text" id="institutionNumber" name="institutionNumber" 
                                                placeholder="123" maxlength="3" pattern="[0-9]{3}"
                                                oninput="updateProgress()">
                                     </div>
@@ -672,21 +680,21 @@
                                         </span>
                                     </label>
                                     <div class="input-icon" data-icon="🏪">
-                                        <input type="text" id="transitNumber" name="transit_number" 
+                                        <input type="text" id="transitNumber" name="transitNumber" 
                                                placeholder="12345" maxlength="5" pattern="[0-9]{5}"
                                                oninput="updateProgress()">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="caAccountNumber">
+                                <label for="accountNumber">
                                     Account Number <span class="required">*</span>
                                     <span class="tooltip">ℹ️
                                         <span class="tooltiptext">7-12 digit account number</span>
                                     </span>
                                 </label>
                                 <div class="input-icon" data-icon="💳">
-                                    <input type="text" id="caAccountNumber" name="ca_account_number" 
+                                    <input type="text" id="accountNumber" name="accountNumber" 
                                            placeholder="1234567890" minlength="7" maxlength="12" pattern="[0-9]{7,12}"
                                            oninput="updateProgress()">
                                 </div>
@@ -706,25 +714,10 @@
     </div>
 
     <script>
-        const config = {
-            webhookUrl: 'https://n8n-movers-project-n8n.5gwahg.easypanel.host/webhook/c2bca58d-44e6-408d-93c3-0e3f1809e0ac',
-            companyName: 'Just Move Vancouver',
-            landingPageUrl: 'https://moving-tech.github.io/get-your-quote'
-        };
-
+        // ⚠️ IMPORTANT: Replace this with your actual n8n webhook URL
+        const WEBHOOK_URL = 'https://n8n-movers-project-n8n.5gwahg.easypanel.host/webhook/c2bca58d-44e6-408d-93c3-0e3f1809e0ac';
+        
         let generatedReferralLink = '';
-
-        // Generate unique referral ID (same logic as n8n code)
-        function generateReferralId() {
-            const timestamp = Date.now().toString(36);
-            const randomStr = Math.random().toString(36).substring(2, 8);
-            return `ref-${timestamp}-${randomStr}`;
-        }
-
-        // Generate QR code URL
-        function generateQRCodeUrl(referralLink) {
-            return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(referralLink)}`;
-        }
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeForm();
@@ -738,12 +731,10 @@
             if (logoImg) {
                 logoImg.onerror = function() {
                     logo.classList.add('no-image');
-                    console.log('Logo image failed to load, showing fallback truck emoji');
                 };
                 
                 logoImg.onload = function() {
                     logo.classList.remove('no-image');
-                    console.log('Logo loaded successfully');
                 };
             }
         }
@@ -755,16 +746,10 @@
             
             if (customerEmail) {
                 document.getElementById('customerEmail').value = customerEmail;
-                document.getElementById('email').value = customerEmail;
-                
-                // Quote number is optional
-                if (quoteNumber) {
-                    document.getElementById('quoteNumber').value = quoteNumber;
-                }
-            } else {
-                showError('Invalid access link. Please use the link provided in your email.');
-                document.getElementById('bankDetailsForm').style.display = 'none';
-                return;
+            }
+            
+            if (quoteNumber) {
+                document.getElementById('quoteNumber').value = quoteNumber;
             }
 
             updateProgress();
@@ -772,13 +757,13 @@
         }
 
         function updateProgress() {
-            const requiredFields = ['fullName', 'email', 'interacSupport'];
+            const requiredFields = ['fullName', 'phone', 'interacSupport'];
             const interacSupport = document.getElementById('interacSupport')?.value;
             
             if (interacSupport === 'yes') {
                 requiredFields.push('interacEmail');
             } else if (interacSupport === 'no') {
-                requiredFields.push('institutionNumber', 'transitNumber', 'caAccountNumber');
+                requiredFields.push('institutionNumber', 'transitNumber', 'accountNumber');
             }
 
             let filledFields = 0;
@@ -801,7 +786,7 @@
             if (interacSupport === 'yes') {
                 interacEmailField.style.display = 'block';
                 traditionalBankingFields.style.display = 'none';
-                ['institutionNumber', 'transitNumber', 'caAccountNumber'].forEach(fieldId => {
+                ['institutionNumber', 'transitNumber', 'accountNumber'].forEach(fieldId => {
                     const field = document.getElementById(fieldId);
                     if (field) field.value = '';
                 });
@@ -825,9 +810,15 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function showSuccess(referralLink) {
+        function showSuccess(referralLink, qrCodeUrl) {
             document.getElementById('formContainer').style.display = 'none';
             document.getElementById('displayReferralLink').textContent = referralLink;
+            
+            // Display QR code
+            if (qrCodeUrl) {
+                document.getElementById('qrCodeImage').src = qrCodeUrl;
+            }
+            
             document.getElementById('successBox').classList.add('show');
             generatedReferralLink = referralLink;
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -855,61 +846,46 @@
             loadingSpinner.style.display = 'block';
             submitText.textContent = 'Processing...';
             
-            // Generate referral link
-            const referralId = generateReferralId();
-            const referralLink = `${config.landingPageUrl}?ref=${referralId}`;
-            const qrCodeUrl = generateQRCodeUrl(referralLink);
-            
+            // Collect form data
             const formData = new FormData(document.getElementById('bankDetailsForm'));
             const data = {};
             
             for (let [key, value] of formData.entries()) {
-                data[key] = value;
+                data[key] = value.trim();
             }
             
-            // Add generated referral information
-            data.referral_id = referralId;
-            data.referral_link = referralLink;
-            data.qr_code = qrCodeUrl;
-            data.landing_page_url = config.landingPageUrl;
-            data.referral_link_generated_at = new Date().toISOString();
-            data.referral_status = 'active';
-            data.total_referrals = 0;
-            data.total_commissions_earned = 0.00;
-            data.commission_rate = 0.08;
-            data.program_status = 'approved';
+            // Add metadata
+            data.submittedAt = new Date().toISOString();
             
-            data.country = 'CA';
-            data.currency = 'CAD';
-            data.form_version = '3.0';
-            data.submission_timestamp = new Date().toISOString();
-            data.user_agent = navigator.userAgent;
-            data.customer_email = document.getElementById('customerEmail').value;
-            data.quote_number = document.getElementById('quoteNumber').value;
+            console.log('Submitting form data:', data);
             
-            if (data.country === 'CA' && data.interac_support === 'yes') {
-                data.payment_method_type = 'interac_etransfer';
-            } else {
-                data.payment_method_type = 'direct_deposit';
-            }
-            
-            fetch(config.webhookUrl, {
+            // Send to n8n webhook - n8n will handle ID generation and return the referral link
+            fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(result => {
                 submitBtn.disabled = false;
                 loadingSpinner.style.display = 'none';
                 submitText.textContent = 'Join Referral Program';
                 
-                if (result.success !== false) {
+                console.log('Response from n8n:', result);
+                
+                // Check if the response contains a referral link
+                if (result.referralLink || result.referral_link) {
+                    const referralLink = result.referralLink || result.referral_link;
                     showSuccess(referralLink);
                 } else {
-                    showError(result.message || 'Submission failed. Please try again.');
+                    showError('Success! However, we could not retrieve your referral link. Please contact support.');
                 }
             })
             .catch(error => {
