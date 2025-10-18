@@ -584,7 +584,6 @@
                 </div>
 
                 <form id="bankDetailsForm">
-                    <input type="hidden" id="customerEmail" name="email" value="">
                     <input type="hidden" id="quoteNumber" name="quoteNumber" value="">
                     
                     <div class="form-section">
@@ -593,12 +592,21 @@
                             Personal Information
                         </div>
 
+                        <div class="form-group">
+                            <label for="fullName">Full Name <span class="required">*</span></label>
+                            <div class="input-icon" data-icon="👤">
+                                <input type="text" id="fullName" name="name" required 
+                                       placeholder="Enter your full legal name" 
+                                       oninput="updateProgress()">
+                            </div>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="fullName">Full Name <span class="required">*</span></label>
-                                <div class="input-icon" data-icon="👤">
-                                    <input type="text" id="fullName" name="name" required 
-                                           placeholder="Enter your full legal name" 
+                                <label for="email">Email Address <span class="required">*</span></label>
+                                <div class="input-icon" data-icon="📧">
+                                    <input type="email" id="email" name="email" required 
+                                           placeholder="your@email.com"
                                            oninput="updateProgress()">
                                 </div>
                             </div>
@@ -745,7 +753,7 @@
             const quoteNumber = urlParams.get('quoteNumber');
             
             if (customerEmail) {
-                document.getElementById('customerEmail').value = customerEmail;
+                document.getElementById('email').value = customerEmail;
             }
             
             if (quoteNumber) {
@@ -757,7 +765,7 @@
         }
 
         function updateProgress() {
-            const requiredFields = ['fullName', 'phone', 'interacSupport'];
+            const requiredFields = ['fullName', 'email', 'phone', 'interacSupport'];
             const interacSupport = document.getElementById('interacSupport')?.value;
             
             if (interacSupport === 'yes') {
@@ -883,7 +891,8 @@
                 // Check if the response contains a referral link
                 if (result.referralLink || result.referral_link) {
                     const referralLink = result.referralLink || result.referral_link;
-                    showSuccess(referralLink);
+                    const qrCodeUrl = result.qrCode || result.qr_code || null;
+                    showSuccess(referralLink, qrCodeUrl);
                 } else {
                     showError('Success! However, we could not retrieve your referral link. Please contact support.');
                 }
