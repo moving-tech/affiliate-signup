@@ -584,7 +584,7 @@
                 </div>
 
                 <form id="bankDetailsForm">
-                    <input type="hidden" id="quoteNumber" name="quoteNumber" value="">
+                    <input type="hidden" id="invoiceID" name="invoiceID" value="">
                     
                     <div class="form-section">
                         <div class="section-title">
@@ -750,14 +750,14 @@
         function initializeForm() {
             const urlParams = new URLSearchParams(window.location.search);
             const customerEmail = urlParams.get('email');
-            const quoteNumber = urlParams.get('quoteNumber');
+            const invoiceID = urlParams.get('invoiceID');
             
             if (customerEmail) {
                 document.getElementById('email').value = customerEmail;
             }
             
-            if (quoteNumber) {
-                document.getElementById('quoteNumber').value = quoteNumber;
+            if (invoiceID) {
+                document.getElementById('invoiceID').value = invoiceID;
             }
 
             updateProgress();
@@ -908,5 +908,3 @@
     </script>
 </body>
 </html>
-
-
