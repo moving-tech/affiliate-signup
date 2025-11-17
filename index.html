@@ -641,8 +641,8 @@
                             </label>
                             <select id="interacSupport" name="interacSupport" onchange="toggleInteracFields(); updateProgress();">
                                 <option value="">Select payment method</option>
-                                <option value="yes">💸 Interac e-Transfer (Recommended)</option>
-                                <option value="no">🏦 Direct Bank Transfer</option>
+                                <option value="Yes">💸 Interac e-Transfer (Recommended)</option>
+                                <option value="No">🏦 Direct Bank Transfer</option>
                             </select>
                         </div>
 
@@ -768,9 +768,9 @@
             const requiredFields = ['fullName', 'email', 'phone', 'interacSupport'];
             const interacSupport = document.getElementById('interacSupport')?.value;
             
-            if (interacSupport === 'yes') {
+            if (interacSupport === 'Yes') {
                 requiredFields.push('interacEmail');
-            } else if (interacSupport === 'no') {
+            } else if (interacSupport === 'No') {
                 requiredFields.push('institutionNumber', 'transitNumber', 'accountNumber');
             }
 
@@ -791,14 +791,14 @@
             const interacEmailField = document.getElementById('interacEmailField');
             const traditionalBankingFields = document.getElementById('traditionalBankingFields');
             
-            if (interacSupport === 'yes') {
+            if (interacSupport === 'Yes') {
                 interacEmailField.style.display = 'block';
                 traditionalBankingFields.style.display = 'none';
                 ['institutionNumber', 'transitNumber', 'accountNumber'].forEach(fieldId => {
                     const field = document.getElementById(fieldId);
                     if (field) field.value = '';
                 });
-            } else if (interacSupport === 'no') {
+            } else if (interacSupport === 'No') {
                 interacEmailField.style.display = 'none';
                 traditionalBankingFields.style.display = 'block';
                 const interacEmail = document.getElementById('interacEmail');
@@ -908,5 +908,6 @@
     </script>
 </body>
 </html>
+
 
 
