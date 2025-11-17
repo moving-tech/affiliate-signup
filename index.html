@@ -584,7 +584,7 @@
                 </div>
 
                 <form id="bankDetailsForm">
-                    <input type="hidden" id="invoiceID" name="invoiceID" value="">
+                    <input type="hidden" id="jobID" name="jobID" value="">
                     
                     <div class="form-section">
                         <div class="section-title">
@@ -756,8 +756,8 @@
                 document.getElementById('email').value = customerEmail;
             }
             
-            if (invoiceID) {
-                document.getElementById('jobID').value = invoiceID;
+            if (jobID) {
+                document.getElementById('jobID').value = jobID;
             }
 
             updateProgress();
@@ -908,4 +908,5 @@
     </script>
 </body>
 </html>
+
 
