@@ -750,14 +750,14 @@
         function initializeForm() {
             const urlParams = new URLSearchParams(window.location.search);
             const customerEmail = urlParams.get('email');
-            const invoiceID = urlParams.get('invoiceID');
+            const jobID = urlParams.get('jobID');
             
             if (customerEmail) {
                 document.getElementById('email').value = customerEmail;
             }
             
             if (invoiceID) {
-                document.getElementById('invoiceID').value = invoiceID;
+                document.getElementById('jobID').value = invoiceID;
             }
 
             updateProgress();
@@ -908,3 +908,4 @@
     </script>
 </body>
 </html>
+
